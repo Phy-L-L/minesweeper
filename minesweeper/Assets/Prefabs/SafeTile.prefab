@@ -12,9 +12,8 @@ GameObject:
   - component: {fileID: 2619751010228292589}
   - component: {fileID: 3047596019694048161}
   - component: {fileID: 2425733627380545434}
-  - component: {fileID: -3846494612464342045}
   m_Layer: 5
-  m_Name: Tile
+  m_Name: SafeTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5991074166982596828, guid: 3f1b4b0a09e440b47885dc7fbd13fc0b, type: 3}
+  m_Sprite: {fileID: 6514700866964321039, guid: 0c63413494f864840ae55975260a1351, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -121,18 +120,3 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &-3846494612464342045
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 549269439252239626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: daeefd569203a2040b69efa6a1b92159, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _button: {fileID: 2425733627380545434}
-  _image: {fileID: 3047596019694048161}
-  _sprite: {fileID: 6514700866964321039, guid: 0c63413494f864840ae55975260a1351, type: 3}
