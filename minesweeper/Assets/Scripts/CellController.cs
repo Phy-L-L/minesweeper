@@ -64,21 +64,48 @@ public class CellController : MonoBehaviour
 
                 if (cell.CellType == Cell.CellCategory.Mine)
                 {
-                    // TODO : élã˜Ç≈ÇÕÇ»Ç¢èÍçá
-                    var upperLeft = coordinate - columnCount - 1;
-                    var upperCenter = coordinate - columnCount;
-                    var upperRight = coordinate - columnCount + 1;
-                    var left = coordinate - 1;
-                    var right = coordinate + 1;
-                    var bottomLeft = coordinate + columnCount - 1;
-                    var bottomCenter = coordinate + columnCount;
-                    var bottomRight = coordinate + columnCount + 1;
+                    int? upperLeft = coordinate - columnCount - 1;
+                    int? upperCenter = coordinate - columnCount;
+                    int? upperRight = coordinate - columnCount + 1;
 
-                    var coordinates = new List<int> { upperLeft, upperCenter, upperRight, left, right, bottomLeft, bottomCenter, bottomRight };
-                    var validCoordinates = coordinates.FindAll(x => x >= 0 && x < _cellGenerator.Cells.Count);
+                    int? left = coordinate - 1;
+                    int? right = coordinate + 1;
+
+                    int? bottomLeft = coordinate + columnCount - 1;
+                    int? bottomCenter = coordinate + columnCount;
+                    int? bottomRight = coordinate + columnCount + 1;
+
+                    // ç≈è„óÒÇ…ÇÕCellÇ™ë∂ç›ÇµÇ»Ç¢ÇΩÇﬂnullÇ∆Ç∑ÇÈ
+                    if (i == 0)
+                    {
+                        upperLeft = null;
+                        upperCenter = null;
+                        upperRight = null;
+                    }
+
+                    // ç≈â∫óÒÇ…ÇÕCellÇ™ë∂ç›ÇµÇ»Ç¢ÇΩÇﬂnullÇ∆Ç∑ÇÈ
+                    if (i == rowCount - 1)
+                    {
+                        bottomLeft = null;
+                        bottomCenter = null;
+                        bottomRight = null;
+                    }
+
+                    if(j == 0)
+                    {
+                        left = null;
+                    }
+
+                    if(j == columnCount - 1)
+                    {
+                        right = null;
+                    }
+
+                    var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, left, right, bottomLeft, bottomCenter, bottomRight };
+                    var validCoordinates = coordinates.FindAll(x => x != null);// && x >= 0 && x < _cellGenerator.Cells.Count);
                     foreach(var validCoordinate in validCoordinates)
                     {
-                        var cellType = _cellGenerator.Cells[validCoordinate].CellType;
+                        var cellType = _cellGenerator.Cells[validCoordinate.Value].CellType;
 
                         switch (cellType)
                         {
@@ -92,7 +119,7 @@ public class CellController : MonoBehaviour
                             case Cell.CellCategory.Seven :
                             // TODO : âˆÇµÇ¢Ç©Ç‡ÅH
                             case Cell.CellCategory.Eight :
-                                cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[validCoordinate].CellType++);
+                                cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[validCoordinate.Value].CellType++);
                                 break;
                             case Cell.CellCategory.Mine :
                                 break;
