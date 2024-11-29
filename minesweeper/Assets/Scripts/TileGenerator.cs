@@ -9,21 +9,24 @@ public class TileGenerator : MonoBehaviour
     private Canvas _canvas;
     [SerializeField]
     private Tile _tilePrefab;
-  
-    [SerializeField]
-    private float _tileSize = 20f;
-    public List<Tile> Tiles = new List<Tile>();
+
+    public List<Tile> Tiles = new();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        // TODO : à íuí≤êÆ
         var position = new Vector2(_canvas.pixelRect.width * 0.5f, _canvas.pixelRect.height * 0.5f);
 
-        for(int i = 0; i < _gameManager.RowCount; i++) 
+        var tileRectTransform = _tilePrefab.GetComponent<RectTransform>();
+        var width = tileRectTransform.rect.width;
+        var height = tileRectTransform.rect.height;
+
+        for(var i = 0; i < _gameManager.RowCount; i++) 
         {   
-            for(int j = 0; j < _gameManager.ColumnCount; j++) 
+            for(var j = 0; j < _gameManager.ColumnCount; j++) 
             {
-                Tiles.Add(Instantiate(_tilePrefab, new Vector2(position.x + i * _tileSize, position.y + j * _tileSize), Quaternion.identity, _canvas.transform));
+                Tiles.Add(Instantiate(_tilePrefab, new Vector2(position.x + i * width, position.y + j * height), Quaternion.identity, _canvas.transform));
             }
         }
     }

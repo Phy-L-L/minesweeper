@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a39c6dcc4f8af46ae2093992366eda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _landmineCount: 10
+  _mineCount: 30
   _rowCount: 9
   _columnCount: 9
 --- !u!1 &1187801271
@@ -561,7 +561,6 @@ MonoBehaviour:
   _gameManager: {fileID: 860327874}
   _canvas: {fileID: 1907423090}
   _tilePrefab: {fileID: -3846494612464342045, guid: a22c1ab4653c5ce4e8da59ecf277e55f, type: 3}
-  _tileSize: 20
   Tiles: []
 --- !u!4 &1930276857
 Transform:
@@ -583,8 +582,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1786684077}
-  - {fileID: 1907423091}
   - {fileID: 1672791195}
+  - {fileID: 1907423091}
   - {fileID: 860327873}
   - {fileID: 1930276857}
   - {fileID: 1187801273}
