@@ -48,6 +48,7 @@ public class Cell : MonoBehaviour
 
     public void ChangeCellType(CellCategory cellType)
     {
+        // TODO : 旗や地雷、テキストカラーを変更する
         _textMeshProUGUI.text = cellType != CellCategory.Empty ? ((int)cellType).ToString() : string.Empty;
     }
 }

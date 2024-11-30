@@ -23,34 +23,37 @@ public class CellController : MonoBehaviour
     private void SetupMine(Cell firstTimeCell)
     {
         _cellGenerator.Cells.ForEach(x => x.CellType = Cell.CellCategory.Empty);
-
+        // 地雷が同じ場所に設置されないように既に出たindexを記憶する
+        List<int> alreadyRandomIndex = new();
         var mineCount = _gameRule.MineCount;
-        List<Cell> mineCells = new();
 
         while (mineCount > 0)
         {
             var index = Random.Range(0, _cellGenerator.Cells.Count);
-            var cell = _cellGenerator.Cells.ElementAt(index);
+            if(alreadyRandomIndex.Contains(index))
+            {
+                continue;
+            }
 
             // もし最初に選択したCellの場合は地雷を設置しない
+            var cell = _cellGenerator.Cells.ElementAt(index);
             if (firstTimeCell == cell)
             {
                 continue;
             }
 
-            mineCells.Add(cell);
-
             if (cell.CellType != Cell.CellCategory.Mine)
             {
                 cell.CellType = Cell.CellCategory.Mine;
+                alreadyRandomIndex.Add(index);
                 --mineCount;
             }
         }
 
-        SetupCellType(mineCells);
+        SetupCellType();
     }
 
-    private void SetupCellType(List<Cell> mineCells)
+    private void SetupCellType()
     {
         var rowCount = _gameRule.RowCount;
         var columnCount = _gameRule.ColumnCount;
@@ -75,7 +78,7 @@ public class CellController : MonoBehaviour
                     int? bottomCenter = coordinate + columnCount;
                     int? bottomRight = coordinate + columnCount + 1;
 
-                    // 最上列にはCellが存在しないためnullとする
+                    // 最上列には上にCellが存在しないためnullとする
                     if (i == 0)
                     {
                         upperLeft = null;
@@ -83,7 +86,7 @@ public class CellController : MonoBehaviour
                         upperRight = null;
                     }
 
-                    // 最下列にはCellが存在しないためnullとする
+                    // 最下列には下にCellが存在しないためnullとする
                     if (i == rowCount - 1)
                     {
                         bottomLeft = null;
@@ -91,42 +94,25 @@ public class CellController : MonoBehaviour
                         bottomRight = null;
                     }
 
+                    // 最左列には左にCellが存在しないためnullとする
                     if(j == 0)
                     {
                         left = null;
                     }
 
+                    // 最右列には右にCellが存在しないためnullとする
                     if(j == columnCount - 1)
                     {
                         right = null;
                     }
 
                     var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, left, right, bottomLeft, bottomCenter, bottomRight };
-                    var validCoordinates = coordinates.FindAll(x => x != null);// && x >= 0 && x < _cellGenerator.Cells.Count);
+                    // TODO : nullであるものをこの状態で省くと不具合の原因になる可能性がある
+                    var validCoordinates = coordinates.FindAll(x => x != null);
                     foreach(var validCoordinate in validCoordinates)
                     {
                         var cellType = _cellGenerator.Cells[validCoordinate.Value].CellType;
-
-                        switch (cellType)
-                        {
-                            case Cell.CellCategory.Empty :
-                            case Cell.CellCategory.One :
-                            case Cell.CellCategory.Two :
-                            case Cell.CellCategory.Three :
-                            case Cell.CellCategory.Four :
-                            case Cell.CellCategory.Five :
-                            case Cell.CellCategory.Six :
-                            case Cell.CellCategory.Seven :
-                            // TODO : 怪しいかも？
-                            case Cell.CellCategory.Eight :
-                                cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[validCoordinate.Value].CellType++);
-                                break;
-                            case Cell.CellCategory.Mine :
-                                break;
-                            case Cell.CellCategory.FirstTimeEmpty :
-                                Debug.LogWarning("通るはずのない処理FirstTimeEmpty");
-                                break;
-                        }
+                        cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[validCoordinate.Value].CellType++);
                     }
                 }
             }
