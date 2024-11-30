@@ -23,31 +23,21 @@ public class CellController : MonoBehaviour
     private void SetupMine(Cell firstTimeCell)
     {
         _cellGenerator.Cells.ForEach(x => x.CellType = Cell.CellCategory.Empty);
-        // 地雷が同じ場所に設置されないように既に出たindexを記憶する
-        List<int> alreadyRandomIndex = new();
         var mineCount = _gameRule.MineCount;
 
         while (mineCount > 0)
         {
             var index = Random.Range(0, _cellGenerator.Cells.Count);
-            if(alreadyRandomIndex.Contains(index))
-            {
-                continue;
-            }
 
-            // もし最初に選択したCellの場合は地雷を設置しない
             var cell = _cellGenerator.Cells.ElementAt(index);
-            if (firstTimeCell == cell)
+            // もし最初に選択したCellの場合または既に地雷に指定したCellには設置しない
+            if (firstTimeCell == cell || cell.CellType == Cell.CellCategory.Mine)
             {
                 continue;
             }
 
-            if (cell.CellType != Cell.CellCategory.Mine)
-            {
-                cell.CellType = Cell.CellCategory.Mine;
-                alreadyRandomIndex.Add(index);
-                --mineCount;
-            }
+            cell.CellType = Cell.CellCategory.Mine;
+            --mineCount;
         }
 
         SetupCellType();
@@ -65,55 +55,57 @@ public class CellController : MonoBehaviour
                 var coordinate = rowCount * i + j;
                 var cell = _cellGenerator.Cells[coordinate];
 
-                if (cell.CellType == Cell.CellCategory.Mine)
+                if (cell.CellType != Cell.CellCategory.Mine)
                 {
-                    int? upperLeft = coordinate - columnCount - 1;
-                    int? upperCenter = coordinate - columnCount;
-                    int? upperRight = coordinate - columnCount + 1;
+                    continue;
+                }
 
-                    int? left = coordinate - 1;
-                    int? right = coordinate + 1;
+                int? upperLeft = coordinate - columnCount - 1;
+                int? upperCenter = coordinate - columnCount;
+                int? upperRight = coordinate - columnCount + 1;
 
-                    int? bottomLeft = coordinate + columnCount - 1;
-                    int? bottomCenter = coordinate + columnCount;
-                    int? bottomRight = coordinate + columnCount + 1;
+                int? left = coordinate - 1;
+                int? right = coordinate + 1;
 
-                    // 最上列には上にCellが存在しないためnullとする
-                    if (i == 0)
-                    {
-                        upperLeft = null;
-                        upperCenter = null;
-                        upperRight = null;
-                    }
+                int? bottomLeft = coordinate + columnCount - 1;
+                int? bottomCenter = coordinate + columnCount;
+                int? bottomRight = coordinate + columnCount + 1;
 
-                    // 最下列には下にCellが存在しないためnullとする
-                    if (i == rowCount - 1)
-                    {
-                        bottomLeft = null;
-                        bottomCenter = null;
-                        bottomRight = null;
-                    }
+                // 最上列には上にCellが存在しないためnullとする
+                if (i == 0)
+                {
+                    upperLeft = null;
+                    upperCenter = null;
+                    upperRight = null;
+                }
 
-                    // 最左列には左にCellが存在しないためnullとする
-                    if(j == 0)
-                    {
-                        left = null;
-                    }
+                // 最下列には下にCellが存在しないためnullとする
+                if (i == rowCount - 1)
+                {
+                    bottomLeft = null;
+                    bottomCenter = null;
+                    bottomRight = null;
+                }
 
-                    // 最右列には右にCellが存在しないためnullとする
-                    if(j == columnCount - 1)
-                    {
-                        right = null;
-                    }
+                // 最左列には左にCellが存在しないためnullとする
+                if(j == 0)
+                {
+                    left = null;
+                }
 
-                    var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, left, right, bottomLeft, bottomCenter, bottomRight };
-                    // TODO : nullであるものをこの状態で省くと不具合の原因になる可能性がある
-                    var validCoordinates = coordinates.FindAll(x => x != null);
-                    foreach(var validCoordinate in validCoordinates)
-                    {
-                        var cellType = _cellGenerator.Cells[validCoordinate.Value].CellType;
-                        cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[validCoordinate.Value].CellType++);
-                    }
+                // 最右列には右にCellが存在しないためnullとする
+                if(j == columnCount - 1)
+                {
+                    right = null;
+                }
+
+                var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, left, right, bottomLeft, bottomCenter, bottomRight };
+                // TODO : nullであるものをこの状態で省くと不具合の原因になる可能性がある
+                var validCoordinates = coordinates.FindAll(x => x != null);
+                foreach(var validCoordinate in validCoordinates)
+                {
+                    var cellType = _cellGenerator.Cells[validCoordinate.Value].CellType;
+                    cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[validCoordinate.Value].CellType++);
                 }
             }
         }
