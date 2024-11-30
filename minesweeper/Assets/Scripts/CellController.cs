@@ -100,12 +100,20 @@ public class CellController : MonoBehaviour
                 }
 
                 var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, left, right, bottomLeft, bottomCenter, bottomRight };
-                // TODO : null‚Å‚ ‚é‚à‚Ì‚ð‚±‚Ìó‘Ô‚ÅÈ‚­‚Æ•s‹ï‡‚ÌŒ´ˆö‚É‚È‚é‰Â”\«‚ª‚ ‚é
-                var validCoordinates = coordinates.FindAll(x => x != null);
-                foreach(var validCoordinate in validCoordinates)
+                foreach(var x in coordinates)
                 {
-                    var cellType = _cellGenerator.Cells[validCoordinate.Value].CellType;
-                    cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[validCoordinate.Value].CellType++);
+                    if(!x.HasValue)
+                    {
+                        continue;
+                    }
+
+                    var cellType = _cellGenerator.Cells[x.Value].CellType;
+                    if(cellType == Cell.CellCategory.Mine || cellType == Cell.CellCategory.Flag)
+                    {
+                        continue;
+                    }
+
+                    cellType = (Cell.CellCategory)((int)_cellGenerator.Cells[x.Value].CellType++);
                 }
             }
         }
