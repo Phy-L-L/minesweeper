@@ -15,7 +15,6 @@ public class CellGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
-        // TODO : à íuí≤êÆ
         var position = new Vector2(_canvas.pixelRect.width * 0.5f, _canvas.pixelRect.height * 0.5f);
 
         var cellRectTransform = _cellPrefab.GetComponent<RectTransform>();

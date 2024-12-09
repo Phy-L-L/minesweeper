@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,8 +19,20 @@ public class Cell : MonoBehaviour
         Eight = 8,
         // 旗
         Flag = 100,
-        Mine = 101
+        Mine = 200
     }
+
+    private Dictionary<CellCategory, string> _colors = new()
+    {
+        { CellCategory.One, "#0000F7" },
+        { CellCategory.Two, "#007C00" },
+        { CellCategory.Three, "#EC1F1F" },
+        { CellCategory.Four, "#00007C" },
+        { CellCategory.Five, "#7C0000" },
+        { CellCategory.Six, "#007C7C" },
+        { CellCategory.Seven, "#000000" },
+        { CellCategory.Eight, "#7C7C7C" }
+    };
 
     [SerializeField]
     private Button _button;
@@ -29,6 +42,8 @@ public class Cell : MonoBehaviour
     private Sprite _safeCellSprite;
     [SerializeField]
     private Sprite _flagCellSprite;
+    [SerializeField]
+    private Sprite _mineCellSprite;
     [SerializeField]
     private TMPro.TextMeshProUGUI _textMeshProUGUI;
 
@@ -42,13 +57,43 @@ public class Cell : MonoBehaviour
     private void OnClickCell()
     {
         FindAnyObjectByType<CellController>().OnClickCell(this);
-        Destroy(_button);
-        _image.sprite = _safeCellSprite;
     }
 
     public void ChangeCellType(CellCategory cellType)
     {
-        // TODO : 旗や地雷、テキストカラーを変更する
-        _textMeshProUGUI.text = cellType != CellCategory.Empty ? ((int)cellType).ToString() : string.Empty;
+        void changeColor(string colorCode)
+        {
+            _textMeshProUGUI.text = $"<color={colorCode}>{((int)cellType)}</color>";
+        }
+                
+        // TODO : 旗
+        switch (cellType)
+        { 
+            case CellCategory.Empty :
+                _image.sprite = _safeCellSprite;
+                Destroy(_button);
+                _textMeshProUGUI.text = string.Empty;
+                break;
+            case CellCategory.One :
+            case CellCategory.Two :
+            case CellCategory.Three :
+            case CellCategory.Four :
+            case CellCategory.Five :
+            case CellCategory.Six :
+            case CellCategory.Seven :
+            case CellCategory.Eight :
+                _image.sprite = _safeCellSprite;
+                Destroy(_button);
+                changeColor(_colors[cellType]);
+                break;
+            case CellCategory.Flag :
+                _image.sprite = _flagCellSprite;
+                _textMeshProUGUI.text = string.Empty;
+                break;
+            case CellCategory.Mine :
+                _image.sprite = _mineCellSprite;
+                _textMeshProUGUI.text = string.Empty;
+                break;
+        }
     }
 }

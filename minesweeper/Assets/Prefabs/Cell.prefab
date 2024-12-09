@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5991074166982596828, guid: 3f1b4b0a09e440b47885dc7fbd13fc0b, type: 3}
+  m_Sprite: {fileID: 9020057740809469839, guid: d5fc78a37c34ff74a9782fc4c4f4bc6d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -136,8 +136,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _button: {fileID: 2022914745844780537}
   _image: {fileID: 6132667086361640158}
-  _safeCellSprite: {fileID: 6514700866964321039, guid: 0c63413494f864840ae55975260a1351, type: 3}
-  _flagCellSprite: {fileID: 0}
+  _safeCellSprite: {fileID: -3202880611217361679, guid: 8ffce9a41969fee419d795bb57619788, type: 3}
+  _flagCellSprite: {fileID: 767205924555160299, guid: 2ffff37e2c13d9342a4cc0c7dc0784a0, type: 3}
+  _mineCellSprite: {fileID: 5758608314498376044, guid: 69ab60efd18a7234da41de82039ec7a1, type: 3}
   _textMeshProUGUI: {fileID: 130582138273084158}
 --- !u!1 &6528960683634625545
 GameObject:

@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a39c6dcc4f8af46ae2093992366eda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mineCount: 10
+  _mineCount: 1
   _rowCount: 9
   _columnCount: 9
 --- !u!1 &1187801271

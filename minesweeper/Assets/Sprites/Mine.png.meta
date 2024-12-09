@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8ffce9a41969fee419d795bb57619788
+guid: 69ab60efd18a7234da41de82039ec7a1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3202880611217361679
-    second: https3A2F2Fqiita-image-store (2)_0
+      213: 5758608314498376044
+    second: https3A2F2Fqiita-image-store (1)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: https3A2F2Fqiita-image-store (2)_0
+      name: https3A2F2Fqiita-image-store (1)_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1f4376ebd051d83d0800000000000000
-      internalID: -3202880611217361679
+      spriteID: c61694a60cfaaef40800000000000000
+      internalID: 5758608314498376044
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      https3A2F2Fqiita-image-store (2)_0: -3202880611217361679
+      https3A2F2Fqiita-image-store (1)_0: 5758608314498376044
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

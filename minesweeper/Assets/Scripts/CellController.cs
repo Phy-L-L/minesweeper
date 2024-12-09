@@ -8,6 +8,8 @@ public class CellController : MonoBehaviour
     private GameRule _gameRule;
     [SerializeField]
     private CellGenerator _cellGenerator;
+    [SerializeField]
+    private List<Cell> _mineCells;
 
     public void OnClickCell(Cell cell)
     {
@@ -37,14 +39,22 @@ public class CellController : MonoBehaviour
             }
 
             cell.CellType = Cell.CellCategory.Mine;
+            _mineCells.Add(cell);
             --mineCount;
         }
 
+        // TODO: çÌèúÇ∑ÇÈ
+        Debug.LogWarning($"_mineCells: {_mineCells.Count}");
         SetupCellType();
     }
 
     private void SetupCellType()
     {
+        foreach (var mineCell in _mineCells) 
+        {
+
+        }
+
         var rowCount = _gameRule.RowCount;
         var columnCount = _gameRule.ColumnCount;
 
@@ -53,12 +63,7 @@ public class CellController : MonoBehaviour
             for(var j = 0; j < columnCount; j++) 
             {
                 var coordinate = rowCount * i + j;
-                var cell = _cellGenerator.Cells[coordinate];
-
-                if (cell.CellType != Cell.CellCategory.Mine)
-                {
-                    continue;
-                }
+                //var cell = _cellGenerator.Cells[coordinate];
 
                 int? upperLeft = coordinate - columnCount - 1;
                 int? upperCenter = coordinate - columnCount;
@@ -99,14 +104,18 @@ public class CellController : MonoBehaviour
                     right = null;
                 }
 
-                var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, left, right, bottomLeft, bottomCenter, bottomRight };
-                foreach(var x in coordinates)
+                
+                var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, bottomLeft, bottomCenter, bottomRight, left, right };
+                coordinates = coordinates.FindAll(x =>  x >= 0 && x < _cellGenerator.Cells.Count);
+                for (var k = 0; k < coordinates.Count; k++)
                 {
+                    var x = coordinates[k];
                     if(!x.HasValue)
                     {
                         continue;
                     }
 
+                    Debug.Log(x.Value);
                     var cellType = _cellGenerator.Cells[x.Value].CellType;
                     if(cellType == Cell.CellCategory.Mine || cellType == Cell.CellCategory.Flag)
                     {
@@ -121,13 +130,11 @@ public class CellController : MonoBehaviour
 
     private void OpenCell(Cell cell)
     {
+        cell.ChangeCellType(cell.CellType);
+
         if (cell.CellType == Cell.CellCategory.Mine)
         {
-            // TODO : GameOverèàóù
             Debug.LogWarning("GameOver");
-            return;
         }
-
-        cell.ChangeCellType(cell.CellType);
     }
 }
