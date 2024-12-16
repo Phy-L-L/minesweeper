@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 860327873}
   - component: {fileID: 860327874}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: GameRule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a39c6dcc4f8af46ae2093992366eda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _landmineCount: 10
+  _mineCount: 10
   _rowCount: 9
   _columnCount: 9
 --- !u!1 &1187801271
@@ -175,28 +175,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1187801273}
-  - component: {fileID: 1187801272}
+  - component: {fileID: 1187801274}
   m_Layer: 0
-  m_Name: TileController
+  m_Name: CellController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1187801272
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1187801271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 37c3f3ada9ca5c14eb72b6041fa92fcc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gameManager: {fileID: 860327874}
-  _tileGenerator: {fileID: 1930276856}
 --- !u!4 &1187801273
 Transform:
   m_ObjectHideFlags: 0
@@ -212,6 +198,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1187801274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187801271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c54b8d0e1eca30148a247492591908b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _gameRule: {fileID: 860327874}
+  _cellGenerator: {fileID: 1930276856}
+  _mineIndexes: 
 --- !u!1 &1672791192
 GameObject:
   m_ObjectHideFlags: 0
@@ -540,7 +541,7 @@ GameObject:
   - component: {fileID: 1930276857}
   - component: {fileID: 1930276856}
   m_Layer: 0
-  m_Name: TileGenerator
+  m_Name: CellGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -558,11 +559,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6baeeecee10ed534a9d8d608e9f72609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameManager: {fileID: 860327874}
+  _gameRule: {fileID: 860327874}
   _canvas: {fileID: 1907423090}
-  _tilePrefab: {fileID: -3846494612464342045, guid: a22c1ab4653c5ce4e8da59ecf277e55f, type: 3}
-  _tileSize: 20
-  Tiles: []
+  _cellPrefab: {fileID: 6740174552144414760, guid: 1c8bc12438eca49498177066fd0db57f, type: 3}
+  Cells: []
 --- !u!4 &1930276857
 Transform:
   m_ObjectHideFlags: 0
@@ -583,8 +583,8 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1786684077}
-  - {fileID: 1907423091}
   - {fileID: 1672791195}
+  - {fileID: 1907423091}
   - {fileID: 860327873}
   - {fileID: 1930276857}
   - {fileID: 1187801273}

@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 0c63413494f864840ae55975260a1351
+guid: 37849ac2b4cc651479197f5d3c2f4cc1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 6514700866964321039
-    second: 2024-11-28_12h56_41_0
+      213: -7681919471915408227
+    second: https3A2F2Fqiita-image-store (5)_0
+  - first:
+      213: 8313621126931989757
+    second: https3A2F2Fqiita-image-store (5)_1
+  - first:
+      213: -5641813195428484094
+    second: https3A2F2Fqiita-image-store (5)_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +106,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 2024-11-28_12h56_41_0
+      name: https3A2F2Fqiita-image-store (5)_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 20
-        height: 20
+        x: 26
+        y: 36
+        width: 76
+        height: 83
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +121,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f0376511cedd86a50800000000000000
-      internalID: 6514700866964321039
+      spriteID: d94635bd0f6546590800000000000000
+      internalID: -7681919471915408227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: https3A2F2Fqiita-image-store (5)_1
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 114
+        width: 22
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df4c6f31e5aef5370800000000000000
+      internalID: 8313621126931989757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: https3A2F2Fqiita-image-store (5)_2
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 6
+        width: 31
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20caf555ac044b1b0800000000000000
+      internalID: -5641813195428484094
       vertices: []
       indices: 
       edges: []
@@ -135,7 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      2024-11-28_12h56_41_0: 6514700866964321039
+      https3A2F2Fqiita-image-store (5)_0: -7681919471915408227
+      https3A2F2Fqiita-image-store (5)_1: 8313621126931989757
+      https3A2F2Fqiita-image-store (5)_2: -5641813195428484094
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
