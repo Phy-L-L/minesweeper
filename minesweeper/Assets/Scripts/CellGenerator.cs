@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class CellGenerator : MonoBehaviour
 {
@@ -10,7 +9,7 @@ public class CellGenerator : MonoBehaviour
     [SerializeField]
     private Cell _cellPrefab;
 
-    public List<Cell> Cells = new();
+    public Cell[,] Cells;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -21,11 +20,15 @@ public class CellGenerator : MonoBehaviour
         var width = cellRectTransform.rect.width;
         var height = cellRectTransform.rect.height;
 
-        for(var i = 0; i < _gameRule.RowCount; i++) 
+        var columnCount = _gameRule.ColumnCount;
+        var rowCount = _gameRule.RowCount;
+
+        Cells = new Cell[columnCount, rowCount];
+        for(var c = 0; c < columnCount; c++) 
         {   
-            for(var j = 0; j < _gameRule.ColumnCount; j++) 
+            for(var r = 0; r < rowCount; r++) 
             {
-                Cells.Add(Instantiate(_cellPrefab, new Vector2(position.x + i * width, position.y + j * height), Quaternion.identity, _canvas.transform));
+                Cells[c, r] = Instantiate(_cellPrefab, new Vector2(position.x + c * width, position.y + r * height), Quaternion.identity, _canvas.transform);
             }
         }
     }

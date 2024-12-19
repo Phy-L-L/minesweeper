@@ -1,6 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
 
 public class CellController : MonoBehaviour
 {
@@ -8,25 +6,11 @@ public class CellController : MonoBehaviour
     private GameRule _gameRule;
     [SerializeField]
     private CellGenerator _cellGenerator;
-    [SerializeField]
-    private List<int> _mineIndexes;
-
-    // TODO : Debug
-    private void Update()
-    {
-        if(Input.GetMouseButton(1))
-        {
-            foreach(var cell in _cellGenerator.Cells)
-            {
-                cell.OpenCell(cell.CellType);
-            }
-        }
-    }
 
     public void OnClickCell(Cell cell)
     {
         // 最初の操作で地雷を踏まないようにするための実装
-        if(cell.CellType == Cell.CellCategory.FirstTimeEmpty)
+        if(cell.CellType == Cell.CellCategory.Empty)
         {
             SetupMine(cell);
         }
@@ -36,13 +20,25 @@ public class CellController : MonoBehaviour
 
     private void SetupMine(Cell cellSelectedInFirst)
     {
-        _cellGenerator.Cells.ForEach(x => x.CellType = Cell.CellCategory.Empty);
+        var columnCount = _gameRule.ColumnCount;
+        var rowCount = _gameRule.RowCount;
+
+        for(var c = 0; c < columnCount; c++) 
+        {
+            for(var r = 0; r < rowCount; r++)
+            {
+                _cellGenerator.Cells[c, r].CellType = Cell.CellCategory.Zero;
+            }
+        }
+
         var mineCount = _gameRule.MineCount;
 
         while (mineCount > 0)
         {
-            var index = Random.Range(0, _cellGenerator.Cells.Count);
-            var cell = _cellGenerator.Cells.ElementAt(index);
+            var columnIndex = Random.Range(0, columnCount);
+            var rowIndex = Random.Range(0, rowCount);
+
+            var cell = _cellGenerator.Cells[columnIndex, rowIndex];
 
             // もし最初に選択したCellの場合または既に地雷に指定したCellには設置しない
             if (cellSelectedInFirst == cell || cell.CellType == Cell.CellCategory.Mine)
@@ -51,7 +47,6 @@ public class CellController : MonoBehaviour
             }
 
             cell.CellType = Cell.CellCategory.Mine;
-            _mineIndexes.Add(index);
             --mineCount;
         }
 
@@ -63,45 +58,46 @@ public class CellController : MonoBehaviour
         var columnCount = _gameRule.ColumnCount;
         var rowCount = _gameRule.RowCount;
 
-        foreach(var mineIndex in _mineIndexes) 
+        for(var c = 0; c < columnCount; c++) 
         {
-            int? upperLeft = mineIndex - columnCount - 1;
-            int? upperCenter = mineIndex - columnCount;
-            int? upperRight = mineIndex - columnCount + 1;
-
-            int? bottomLeft = mineIndex + columnCount - 1;
-            int? bottomCenter = mineIndex + columnCount;
-            int? bottomRight = mineIndex + columnCount + 1;
-
-            int? left = mineIndex - 1;
-            int? right = mineIndex + 1;
-
-            var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, bottomLeft, bottomCenter, bottomRight, left, right };
-            var cellCount = _cellGenerator.Cells.Count;
-
-            IEnumerable<int?> ie = coordinates.Select(x =>
+            for(var r = 0; r < rowCount; r++)
             {
-                if(x < 0 || x > cellCount) { x = null; }
-                // 最左列には左にCellが存在しないためnullとする
-                if(mineIndex % columnCount == 0) { x = null; }
-                // 最右列には右にCellが存在しないためnullとする
-                if(mineIndex % columnCount == columnCount - 1) { x = null; }
+                var cell = _cellGenerator.Cells[c, r];
 
-                return x;
-            });
-
-            foreach (var coordinate in ie)
-            {
-                if(!coordinate.HasValue) { continue; }
-
-                var cellType = _cellGenerator.Cells[coordinate.Value].CellType;
-
-                if (cellType == Cell.CellCategory.Mine)
+                // 地雷のときのみ継続して処理をする
+                if (cell.CellType != Cell.CellCategory.Mine)
                 {
                     continue;
                 }
 
-                _cellGenerator.Cells[coordinate.Value].CellType = (Cell.CellCategory)((int)++cellType);
+                bool TryIncrementMineNumber(int columnIndex, int rowIndex)
+                {
+                    var cell = _cellGenerator.Cells[columnIndex, rowIndex];
+                    // 地雷の場合は処理を行わない
+                    if(cell.CellType == Cell.CellCategory.Mine) { return false; }
+
+                    cell.CellType = (Cell.CellCategory)((int)++cell.CellType);
+                    return true;
+                }
+
+                var isCellExistTopLeft = c - 1 >= 0 && r - 1 >= 0;
+                var isCellExistTopCenter = c - 1 >= 0;
+                var isCellExistTopRight = c - 1 >= 0 && r + 1 < rowCount;
+                if(isCellExistTopLeft) { TryIncrementMineNumber(c - 1, r - 1); }
+                if(isCellExistTopCenter) { TryIncrementMineNumber(c - 1, r); }
+                if(isCellExistTopRight) { TryIncrementMineNumber(c - 1, r + 1); }
+
+                var isCellExistBottomLeft = c + 1 < columnCount && r - 1 >= 0;
+                var isCellExistBottomCenter = c + 1 < columnCount;
+                var isCellExistBottomRight = c + 1 < columnCount && r + 1 < rowCount;
+                if(isCellExistBottomLeft) { TryIncrementMineNumber(c + 1, r - 1); }
+                if(isCellExistBottomCenter) { TryIncrementMineNumber(c + 1, r); }
+                if(isCellExistBottomRight) { TryIncrementMineNumber(c + 1, r + 1); }
+
+                var isCellExistLeft = r - 1 >= 0;
+                var isCellExistRight = r + 1 < rowCount;
+                if(isCellExistLeft) { TryIncrementMineNumber(c, r - 1); }
+                if(isCellExistRight) { TryIncrementMineNumber(c, r + 1); }
             }
         }
     }
@@ -111,51 +107,157 @@ public class CellController : MonoBehaviour
         var cellType = cell.CellType;
         cell.OpenCell(cellType);
 
+        if(cellType == Cell.CellCategory.Zero)
+        {
+            OpenZeroSurroundingCell(cell);
+            OpenEmptySurroundingCell();
+        }
+
         if (cellType == Cell.CellCategory.Mine)
         {
             Debug.LogWarning("GameOver");
         }
 
-        //if (cellType == Cell.CellCategory.Empty)
-        //{
-        //    var emptyIndex = _cellGenerator.Cells.FindIndex(x => x == cell);
+        if (IsClearedGame())
+        {
+            Debug.LogWarning("GameClear");
+        }
+    }
 
-        //    var columnCount = _gameRule.ColumnCount;
-        //    var rowCount = _gameRule.RowCount;
+    private void OpenZeroSurroundingCell(Cell zeroCell)
+    {
+        var columnCount = _gameRule.ColumnCount;
+        var rowCount = _gameRule.RowCount;
 
-        //    int? upperLeft = emptyIndex - columnCount - 1;
-        //    int? upperCenter = emptyIndex - columnCount;
-        //    int? upperRight = emptyIndex - columnCount + 1;
-        //    if (upperLeft.Value < 0) { upperLeft = null; }
-        //    if (upperCenter.Value < 0) { upperCenter = null; }
-        //    if (upperRight.Value < 0) { upperRight = null; }
+        for (var c = 0; c < columnCount; c++)
+        {
+            for (var r = 0; r < rowCount; r++)
+            {
+                if (zeroCell == _cellGenerator.Cells[c, r])
+                {
+                    OpenZeroSurroundingCell(c, r);
+                }
+            }
+        }
+    }
 
-        //    int? bottomLeft = emptyIndex + columnCount - 1;
-        //    int? bottomCenter = emptyIndex + columnCount;
-        //    int? bottomRight = emptyIndex + columnCount + 1;
-        //    var cellCount = _cellGenerator.Cells.Count;
-        //    if (bottomLeft.Value > cellCount) { bottomLeft = null; }
-        //    if (bottomCenter.Value > cellCount) { bottomCenter = null; }
-        //    if (bottomRight.Value > cellCount) { bottomRight = null; }
+    private void OpenZeroSurroundingCell(int columnIndex, int rowIndex)
+    {
+        var columnCount = _gameRule.ColumnCount;
+        var rowCount = _gameRule.RowCount;
 
-        //    int? left = emptyIndex - 1;
-        //    int? right = emptyIndex + 1;
-        //    // 最左列には左にCellが存在しないためnullとする
-        //    if (emptyIndex % columnCount == 0) { left = null; }
-        //    // 最右列には右にCellが存在しないためnullとする
-        //    if (emptyIndex % columnCount == columnCount - 1) { right = null; }
+        bool TryOpenZeroCell(int columnIndex, int rowIndex)
+        {
+            var cell = _cellGenerator.Cells[columnIndex, rowIndex];
+            var cellType = cell.CellType;
 
-        //    var coordinates = new List<int?> { upperLeft, upperCenter, upperRight, bottomLeft, bottomCenter, bottomRight, left, right };
+            if (cellType != Cell.CellCategory.Zero) { return false; }
 
-        //    foreach (var coordinate in coordinates)
-        //    {
-        //        if (!coordinate.HasValue) { continue; }
+            cell.OpenCell(cellType);
 
-        //        if (_cellGenerator.Cells[coordinate.Value].CellType == Cell.CellCategory.Empty)
-        //        {
-        //            OpenCell(_cellGenerator.Cells[coordinate.Value]);
-        //        }
-        //    }
-        //}
+            var isCellExistTopLeft = columnIndex - 1 >= 0 && rowIndex - 1 >= 0;
+            var isCellExistTopCenter = columnIndex - 1 >= 0;
+            var isCellExistTopRight = columnIndex - 1 >= 0 && rowIndex + 1 < rowCount;
+            if (isCellExistTopLeft) { OpenZeroSurroundingCell(columnIndex - 1, rowIndex - 1); }
+            if (isCellExistTopCenter) { OpenZeroSurroundingCell(columnIndex - 1, rowIndex); }
+            if (isCellExistTopRight) { OpenZeroSurroundingCell(columnIndex - 1, rowIndex + 1); }
+
+            var isCellExistBottomLeft = columnIndex + 1 < columnCount && rowIndex - 1 >= 0;
+            var isCellExistBottomCenter = columnIndex + 1 < columnCount;
+            var isCellExistBottomRight = columnIndex + 1 < columnCount && rowIndex + 1 < rowCount;
+            if (isCellExistBottomLeft) { OpenZeroSurroundingCell(columnIndex + 1, rowIndex - 1); }
+            if (isCellExistBottomCenter) { OpenZeroSurroundingCell(columnIndex + 1, rowIndex); }
+            if (isCellExistBottomRight) { OpenZeroSurroundingCell(columnIndex + 1, rowIndex + 1); }
+
+            var isCellExistLeft = rowIndex - 1 >= 0;
+            var isCellExistRight = rowIndex + 1 < rowCount;
+            if (isCellExistLeft) { OpenZeroSurroundingCell(columnIndex, rowIndex - 1); }
+            if (isCellExistRight) { OpenZeroSurroundingCell(columnIndex, rowIndex + 1); }
+
+            return true;
+        }
+
+        var isCellExistTopLeft = columnIndex - 1 >= 0 && rowIndex - 1 >= 0;
+        var isCellExistTopCenter = columnIndex - 1 >= 0;
+        var isCellExistTopRight = columnIndex - 1 >= 0 && rowIndex + 1 < rowCount;
+        if (isCellExistTopLeft) { TryOpenZeroCell(columnIndex - 1, rowIndex - 1); }
+        if (isCellExistTopCenter) { TryOpenZeroCell(columnIndex - 1, rowIndex); }
+        if (isCellExistTopRight) { TryOpenZeroCell(columnIndex - 1, rowIndex + 1); }
+
+        var isCellExistBottomLeft = columnIndex + 1 < columnCount && rowIndex - 1 >= 0;
+        var isCellExistBottomCenter = columnIndex + 1 < columnCount;
+        var isCellExistBottomRight = columnIndex + 1 < columnCount && rowIndex + 1 < rowCount;
+        if (isCellExistBottomLeft) { TryOpenZeroCell(columnIndex + 1, rowIndex - 1); }
+        if (isCellExistBottomCenter) { TryOpenZeroCell(columnIndex + 1, rowIndex); }
+        if (isCellExistBottomRight) { TryOpenZeroCell(columnIndex + 1, rowIndex + 1); }
+
+        var isCellExistLeft = rowIndex - 1 >= 0;
+        var isCellExistRight = rowIndex + 1 < rowCount;
+        if (isCellExistLeft) { TryOpenZeroCell(columnIndex, rowIndex - 1); }
+        if (isCellExistRight) { TryOpenZeroCell(columnIndex, rowIndex + 1); }
+    }
+
+    private void OpenEmptySurroundingCell()
+    {
+        void OpenCell(int columnIndex, int rowIndex)
+        { 
+            var cell = _cellGenerator.Cells[columnIndex, rowIndex];
+            var cellType = cell.CellType;
+            cell.OpenCell(cellType);
+        }
+
+        var columnCount = _gameRule.ColumnCount;
+        var rowCount = _gameRule.RowCount;
+
+        for (var c = 0; c < columnCount; c++)
+        {
+            for (var r = 0; r < rowCount; r++)
+            {
+                var cell = _cellGenerator.Cells[c, r];
+                if (cell.CellType != Cell.CellCategory.Empty) { continue; }
+                
+                var isCellExistTopLeft = c - 1 >= 0 && r - 1 >= 0;
+                var isCellExistTopCenter = c - 1 >= 0;
+                var isCellExistTopRight = c - 1 >= 0 && r + 1 < rowCount;
+                if (isCellExistTopLeft) { OpenCell(c - 1, r - 1); }
+                if (isCellExistTopCenter) { OpenCell(c - 1, r); }
+                if (isCellExistTopRight) { OpenCell(c - 1, r + 1); }
+
+                var isCellExistBottomLeft = c + 1 < columnCount && r - 1 >= 0;
+                var isCellExistBottomCenter = c + 1 < columnCount;
+                var isCellExistBottomRight = c + 1 < columnCount && r + 1 < rowCount;
+                if (isCellExistBottomLeft) { OpenCell(c + 1, r - 1); }
+                if (isCellExistBottomCenter) { OpenCell(c + 1, r); }
+                if (isCellExistBottomRight) { OpenCell(c + 1, r + 1); }
+
+                var isCellExistLeft = r - 1 >= 0;
+                var isCellExistRight = r + 1 < rowCount;
+                if (isCellExistLeft) { OpenCell(c, r - 1); }
+                if (isCellExistRight) { OpenCell(c, r + 1); }
+            }
+        }
+    }
+
+    private bool IsClearedGame()
+    {
+        var columnCount = _gameRule.ColumnCount;
+        var rowCount = _gameRule.RowCount;
+
+        var isOpenedCellCount = 0;
+        for (var c = 0; c < columnCount; c++)
+        {
+            for (var r = 0; r < rowCount; r++)
+            {
+                if (_cellGenerator.Cells[c, r].IsOpened)
+                {
+                    ++isOpenedCellCount;
+                }
+            }
+        }
+
+        var cellTotalCount = columnCount * rowCount;
+        var mineCount = _gameRule.MineCount;
+        var isClearedGame = (cellTotalCount - isOpenedCellCount) == mineCount;
+        return isClearedGame;
     }
 }

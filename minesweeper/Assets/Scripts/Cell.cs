@@ -6,9 +6,8 @@ public class Cell : MonoBehaviour
 {
     public enum CellCategory
     {
-        // Å‰‚Ì‘€ì‚Å’n—‹‚ð“¥‚Ü‚È‚¢‚æ‚¤‚É‚·‚é‚½‚ß
-        FirstTimeEmpty = -1,
-        Empty = 0,
+        Empty = -100,
+        Zero = 0,
         One = 1,
         Two = 2,
         Three = 3,
@@ -43,7 +42,10 @@ public class Cell : MonoBehaviour
     [SerializeField]
     private TMPro.TextMeshProUGUI _textMeshProUGUI;
 
-    public CellCategory CellType { get; set; } = CellCategory.FirstTimeEmpty;
+    private bool _isOpened = false;
+    public bool IsOpened => _isOpened;
+
+    public CellCategory CellType { get; set; } = CellCategory.Empty;
 
     void Start()
     {
@@ -57,7 +59,8 @@ public class Cell : MonoBehaviour
 
     public void OpenCell(CellCategory cellType)
     {
-        if (_button == null) { return; }
+        if (_isOpened) { return; }
+        _isOpened = true;
 
         void changeColor(string colorCode)
         {
@@ -66,10 +69,10 @@ public class Cell : MonoBehaviour
                 
         switch (cellType)
         {
-            case CellCategory.Empty :
+            case CellCategory.Zero :
+                CellType = CellCategory.Empty;
                 _image.sprite = _safeCellSprite;
                 Destroy(_button);
-                _button = null;
                 _textMeshProUGUI.text = string.Empty;
                 break;
             case CellCategory.One :
@@ -82,11 +85,11 @@ public class Cell : MonoBehaviour
             case CellCategory.Eight :
                 _image.sprite = _safeCellSprite;
                 Destroy(_button);
-                _button = null;
                 changeColor(_colors[cellType]);
                 break;
             case CellCategory.Mine :
                 _image.sprite = _mineCellSprite;
+                Destroy(_button);
                 _textMeshProUGUI.text = string.Empty;
                 break;
         }

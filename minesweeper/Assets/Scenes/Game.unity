@@ -164,8 +164,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mineCount: 10
-  _rowCount: 9
   _columnCount: 9
+  _rowCount: 9
 --- !u!1 &1187801271
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +212,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameRule: {fileID: 860327874}
   _cellGenerator: {fileID: 1930276856}
-  _mineIndexes: 
 --- !u!1 &1672791192
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,7 +561,6 @@ MonoBehaviour:
   _gameRule: {fileID: 860327874}
   _canvas: {fileID: 1907423090}
   _cellPrefab: {fileID: 6740174552144414760, guid: 1c8bc12438eca49498177066fd0db57f, type: 3}
-  Cells: []
 --- !u!4 &1930276857
 Transform:
   m_ObjectHideFlags: 0
